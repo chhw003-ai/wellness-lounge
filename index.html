@@ -214,26 +214,29 @@
             <span class="close-btn">&times;</span>
             <h2 class="modal-title">상담 신청하기</h2>
             <p class="modal-desc">간단한 정보를 남겨주시면, 전문 스페셜리스트가 빠른 시일 내에 연락드리겠습니다.</p>
-            <form class="apply-form" onsubmit="event.preventDefault(); alert('상담 신청이 완료되었습니다!'); document.getElementById('applyModal').style.display='none';">
+            <form id="applicationForm" class="apply-form">
                 <div class="form-group">
-                    <label for="name">성함</label>
+                    <label for="name">고객명</label>
                     <input type="text" id="name" class="form-control" placeholder="홍길동" required>
                 </div>
                 <div class="form-group">
-                    <label for="phone">연락처</label>
+                    <label for="phone">전화번호</label>
                     <input type="tel" id="phone" class="form-control" placeholder="010-0000-0000" required>
                 </div>
                 <div class="form-group">
-                    <label for="time">통화 가능 시간</label>
-                    <select id="time" class="form-control">
-                        <option value="anytime">언제든 가능</option>
-                        <option value="morning">오전 (09:00 - 12:00)</option>
-                        <option value="afternoon">오후 (12:00 - 18:00)</option>
-                        <option value="evening">저녁 (18:00 - 21:00)</option>
+                    <label for="email">이메일 (선택)</label>
+                    <input type="email" id="email" class="form-control" placeholder="example@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="type">문의 형태</label>
+                    <select id="type" class="form-control">
+                        <option value="멤버십 및 클래스 수강 문의">멤버십 및 클래스 수강 문의</option>
+                        <option value="클래스 개설 문의">클래스 개설 문의</option>
+                        <option value="브랜드 콜라보 문의">브랜드 콜라보 문의</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="message">문의 내용 (선택)</label>
+                    <label for="message">문의내용</label>
                     <textarea id="message" class="form-control" rows="3" placeholder="불편하신 부위나 원하시는 케어 방향을 자유롭게 적어주세요."></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 10px;">상담 신청 완료</button>
@@ -247,6 +250,8 @@
         const openBtns = document.querySelectorAll(".open-modal-btn");
         const closeBtn = document.querySelector(".close-btn");
 
+        const form = document.getElementById("applicationForm");
+
         openBtns.forEach(btn => {
             btn.addEventListener("click", function(e) {
                 e.preventDefault();
@@ -255,15 +260,60 @@
             });
         });
 
-        closeBtn.addEventListener("click", function() {
+        function closeModal() {
             modal.style.display = "none";
             document.body.style.overflow = "auto";
-        });
+            form.reset();
+        }
+
+        closeBtn.addEventListener("click", closeModal);
 
         window.addEventListener("click", function(e) {
             if (e.target === modal) {
-                modal.style.display = "none";
-                document.body.style.overflow = "auto";
+                closeModal();
+            }
+        });
+
+        // Form Submit Logic
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = "전송 중...";
+            submitBtn.disabled = true;
+
+            const formData = {
+                name: document.getElementById("name").value,
+                phone: document.getElementById("phone").value,
+                email: document.getElementById("email").value,
+                type: document.getElementById("type").value,
+                message: document.getElementById("message").value
+            };
+
+            try {
+                const response = await fetch("/api/submit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("상담 신청이 성공적으로 완료되었습니다!");
+                    closeModal();
+                } else {
+                    const errorData = await response.json();
+                    alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+                    console.error("API Error:", errorData);
+                }
+            } catch (error) {
+                alert("네트워크 오류가 발생했습니다.");
+                console.error("Network Error:", error);
+            } finally {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
             }
         });
     </script>
