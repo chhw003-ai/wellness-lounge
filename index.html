@@ -14,7 +14,7 @@
             <nav class="nav-links">
                 <a href="#program">프로그램</a>
                 <a href="#proof">후기</a>
-                <a href="#contact" class="btn btn-outline">문의하기</a>
+                <a href="#" class="btn btn-outline open-modal-btn">문의하기</a>
             </nav>
         </div>
     </header>
@@ -31,7 +31,7 @@
             <h1 class="hero-headline">당신의 잃어버린 에너지를 되찾는<br>가장 확실한 방법</h1>
             <p class="hero-subhead">근본적인 원인을 분석하여 오직 당신만을 위한 맞춤형 회복 플랜을 설계합니다.</p>
             <div class="hero-cta">
-                <a href="#" class="btn btn-primary">오늘부터 시작하기 <!-- 나중에 상담신청 링크로 교체 예정 --></a>
+                <a href="#" class="btn btn-primary open-modal-btn">오늘부터 시작하기</a>
             </div>
         </div>
         <div class="placeholder hero-placeholder" data-role="hero">Hero 이미지 자리</div>
@@ -107,7 +107,7 @@
                         <li>월 4회 집중 케어</li>
                         <li>프라이빗 라운지 이용</li>
                     </ul>
-                    <a href="#" class="btn btn-primary">시그니처 플랜 상담 <!-- 나중에 상담신청 링크로 교체 예정 --></a>
+                    <a href="#" class="btn btn-primary open-modal-btn">시그니처 플랜 상담</a>
                 </div>
                 <div class="pricing-card">
                     <h3>프리미엄 플랜</h3>
@@ -191,7 +191,7 @@
             <h2 class="section-title">오늘이 당신의 몸이 가벼워지는 첫날입니다</h2>
             <p>이번 달 한정으로 진행되는 프리미엄 진단 혜택을 놓치지 마세요.</p>
             <div class="cta-actions">
-                <a href="#" class="btn btn-primary btn-large">상담 신청하기 <!-- 나중에 상담신청 링크로 교체 예정 --></a>
+                <a href="#" class="btn btn-primary btn-large open-modal-btn">상담 신청하기</a>
             </div>
         </div>
     </section>
@@ -208,5 +208,64 @@
             </div>
         </div>
     </footer>
+    <!-- Apply Modal -->
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 class="modal-title">상담 신청하기</h2>
+            <p class="modal-desc">간단한 정보를 남겨주시면, 전문 스페셜리스트가 빠른 시일 내에 연락드리겠습니다.</p>
+            <form class="apply-form" onsubmit="event.preventDefault(); alert('상담 신청이 완료되었습니다!'); document.getElementById('applyModal').style.display='none';">
+                <div class="form-group">
+                    <label for="name">성함</label>
+                    <input type="text" id="name" class="form-control" placeholder="홍길동" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">연락처</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="010-0000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">통화 가능 시간</label>
+                    <select id="time" class="form-control">
+                        <option value="anytime">언제든 가능</option>
+                        <option value="morning">오전 (09:00 - 12:00)</option>
+                        <option value="afternoon">오후 (12:00 - 18:00)</option>
+                        <option value="evening">저녁 (18:00 - 21:00)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">문의 내용 (선택)</label>
+                    <textarea id="message" class="form-control" rows="3" placeholder="불편하신 부위나 원하시는 케어 방향을 자유롭게 적어주세요."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 10px;">상담 신청 완료</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        const modal = document.getElementById("applyModal");
+        const openBtns = document.querySelectorAll(".open-modal-btn");
+        const closeBtn = document.querySelector(".close-btn");
+
+        openBtns.forEach(btn => {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                modal.style.display = "flex";
+                document.body.style.overflow = "hidden"; // Prevent background scrolling
+            });
+        });
+
+        closeBtn.addEventListener("click", function() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        });
+
+        window.addEventListener("click", function(e) {
+            if (e.target === modal) {
+                modal.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        });
+    </script>
 </body>
 </html>
